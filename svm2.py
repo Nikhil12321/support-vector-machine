@@ -43,7 +43,7 @@ class SVM(object):
             tmp2 = np.identity(n_samples)
             G = cvxopt.matrix(np.vstack((tmp1, tmp2))) #vertical stack
             tmp1 = np.zeros(n_samples)
-            tmp2 = np.ones(n_samples) * self.C
+            tmp2 = np.ones(n_samplese) * self.C
             h = cvxopt.matrix(np.hstack((tmp1, tmp2)))#horizontal stack
 
         # solve QP problem
@@ -196,6 +196,7 @@ if __name__ == "__main__":
         X_test, y_test = split_test(X1, y1, X2, y2)
 
         clf = SVM()
+        print X_train
         clf.fit(X_train, y_train)
 
         y_predict = clf.predict(X_test)
@@ -232,4 +233,5 @@ if __name__ == "__main__":
 
         plot_contour(X_train[y_train==1], X_train[y_train==-1], clf)
 
-    test_soft()
+    test_linear()
+    

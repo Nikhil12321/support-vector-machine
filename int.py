@@ -14,7 +14,7 @@ stemmer = PorterStemmer()
 
 new_feature_list = []
 
-number_of_documents = 40.0  # number of training sets
+number_of_documents = 75.0  # number of training sets
 
 weight_feature_vector = []
 
@@ -261,7 +261,7 @@ def calculate_weight(featureVector, featureList, global_vector):
 fp = open('tweets.txt', 'r')
 sampleTweet = fp.readline()
 
-inp = csv.reader(open('training.csv', 'rb'), delimiter=',')
+inp = csv.reader(open('trainingo.csv', 'rb'), delimiter=',')
 stopwords = getStopWords()
 tweets = []
 featureVector = []
@@ -310,7 +310,7 @@ for w in tweets:
     #print weight_of_tweet
 #print "weight weight_of_tweet"
 
-
+print weight_feature_vector[1]
 # print new_feature_list
 # print tweets
 # print featureList
@@ -329,9 +329,9 @@ if __name__ == "__main__":
         mean2 = np.array([2, 0])
         cov = np.array([[0.8, 0.6], [0.6, 0.8]])
         #X1 = np.random.multivariate_normal(mean1, cov, 100)
-        X1 = np.array(weight_feature_vector[:20])
+        X1 = np.array(weight_feature_vector[:38])
         y1 = np.ones(len(X1))
-        X2 = np.array(weight_feature_vector[20:])
+        X2 = np.array(weight_feature_vector[38:])
         #X2 = np.random.multivariate_normal(mean2, cov, 100)
         y2 = np.ones(len(X2)) * -1
         return X1, y1, X2, y2
@@ -362,19 +362,19 @@ if __name__ == "__main__":
         return X1, y1, X2, y2
 
     def split_train(X1, y1, X2, y2):
-        X1_train = X1[:18]
-        y1_train = y1[:18]
-        X2_train = X2[:18]
-        y2_train = y2[:18]
+        X1_train = X1[:35]
+        y1_train = y1[:35]
+        X2_train = X2[3:]
+        y2_train = y2[3:]
         X_train = np.vstack((X1_train, X2_train))
         y_train = np.hstack((y1_train, y2_train))
         return X_train, y_train
 
     def split_test(X1, y1, X2, y2):
-        X1_test = X1[18:]
-        y1_test = y1[18:]
-        X2_test = X2[18:]
-        y2_test = y2[18:]
+        X1_test = X1[35:]
+        y1_test = y1[35:]
+        X2_test = X2[:3]
+        y2_test = y2[:3]
         print len(X1_test)
         print len(X2_test)
         X_test = np.vstack((X1_test, X2_test))
@@ -385,10 +385,10 @@ if __name__ == "__main__":
         def f(x, w, b, c=0):
             # given x, return y such that [x,y] in on the line
             # w.x + b = c
-            return (-w[0] * x - b + c) / w[1]
+            return (w[0] * x - b + c) / w[1]
 
-        pl.plot(X1_train[:, 0], X1_train[:, 1], "ro")
-        pl.plot(X2_train[:, 0], X2_train[:, 1], "bo")
+        pl.plot(X1_train[:], X1_train[:], "ro")
+        pl.plot(X2_train[:], X2_train[:], "bo")
         pl.scatter(clf.sv[:, 0], clf.sv[:, 1], s=100, c="g")
 
         # w.x + b = 0
