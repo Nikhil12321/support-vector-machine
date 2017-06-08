@@ -4,22 +4,14 @@ import string
 import math
 import numpy as np
 from numpy import linalg
-import cvxopt
-import cvxopt.solvers
+# import cvxopt
+# import cvxopt.solvers
 import datetime
 
-from nltk.stem import*
+# from nltk.stem import*
 
 
-stemmer = PorterStemmer()
 
-new_feature_list = []
-
-number_of_documents = 2000.0  # number of training sets
-
-counter = 1
-
-weight_feature_vector = []
 
 def linear_kernel(x1, x2):
     return np.dot(x1, x2)
@@ -269,52 +261,34 @@ def calculate_weight(featureVector, featureList, global_vector):
 
 
 
-# main
-
-inp = csv.reader(open('output.csv', 'rb'), delimiter=',')
-stopwords = getStopWords()
-tweets = []
-featureVector = []
-featureList = []
-
-
-# getting featureList and featureVector
-for row in inp:
-
-    sentiment = row[0]
-    tweet = row[1]
-    processedTweet = processTweet(tweet)
-    featureVector = getFeatureVector(processedTweet, stopwords)
-    tweets.append(featureVector);
-    for w in featureVector:
-        featureList.append(w)
-global_vector = get_global_vector(featureList)
-
-for w in tweets:
-    weight_of_tweet = calculate_weight(w, new_feature_list, global_vector)
-    weight_feature_vector.append(weight_of_tweet)
 
 def gen_non_lin_separable_data():
-    X1 = np.array(weight_feature_vector[:1000])
+    X1 = np.array(weight_feature_vector[:num_positive])
     y1 = np.ones(len(X1))
-    X2 = np.array(weight_feature_vector[1000:])
+    X2 = np.array(weight_feature_vector[num_positive:])
     y2 = np.ones(len(X2)) * -1
     return X1, y1, X2, y2
 
 def split_train(X1, y1, X2, y2):
-    X1_train = X1[:900]
-    y1_train = y1[:900]
-    X2_train = X2[:900]
-    y2_train = y2[:900]
+
+    num = split_ratio*num_positive
+
+    X1_train = X1[:num]
+    y1_train = y1[:num]
+    X2_train = X2[:num]
+    y2_train = y2[:num]
     X_train = np.vstack((X1_train, X2_train))
     y_train = np.hstack((y1_train, y2_train))
     return X_train, y_train
 
 def split_test(X1, y1, X2, y2):
-    X1_test = X1[900:]
-    y1_test = y1[900:]
-    X2_test = X2[900:]
-    y2_test = y2[900:]
+
+    num = split_ratio*num_positive
+
+    X1_test = X1[num:]
+    y1_test = y1[num:]
+    X2_test = X2[num:]
+    y2_test = y2[num:]
     X_test = np.vstack((X1_test, X2_test))
     y_test = np.hstack((y1_test, y2_test))
     return X_test, y_test
@@ -343,24 +317,42 @@ def test_non_linear():
     ####################################################
 
 
-start_time = datetime.datetime.now()
-start_minute = start_time.minute
-start_second = start_time.second
-start_microsecond = start_time.microsecond
+
+# main
+
+#stemmer = PorterStemmer()
+
+new_feature_list = []
+
+counter = 1
+
+weight_feature_vector = []
+
+inp = csv.reader(open('training.csv', 'rb'), delimiter=',')
+stopwords = getStopWords()
+tweets = []
+featureVector = []
+featureList = []
+number_of_documents = len(list(inp))  # number of training sets
+num_positive = number_of_documents/2
+num_negative = num_positive
+split_ratio = 0.9
+
+
+getting featureList and featureVector
+for row in inp:
+
+    sentiment = row[0]
+    tweet = row[1]
+    processedTweet = processTweet(tweet)
+    featureVector = getFeatureVector(processedTweet, stopwords)
+    tweets.append(featureVector);
+    for w in featureVector:
+        featureList.append(w)
+global_vector = get_global_vector(featureList)
+
+for w in tweets:
+    weight_of_tweet = calculate_weight(w, new_feature_list, global_vector)
+    weight_feature_vector.append(weight_of_tweet)
 
 test_non_linear()
-
-end_time = datetime.datetime.now()
-end_minute = end_time.minute
-end_second = end_time.second
-end_microsecond = end_time.microsecond
-
-minutes_taken = end_minute - start_minute
-seconds_taken = abs(end_second - start_second)
-microseconds_taken = abs(end_microsecond - start_microsecond)
-print "minutes taken"
-print minutes_taken
-print "seconds taken"
-print seconds_taken
-print "micro seconds taken"
-print microseconds_taken
