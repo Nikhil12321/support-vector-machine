@@ -6,8 +6,9 @@ For the details of SVM classifier and the source referred see:[link](https://git
 
 ## Any Pre-requisites?
 YES!
-1. **CVXopt**: This is an optimization library used for solving the quadratic programming problem that is used to make the classifier.
-2. **Natural Language Toolkit**: This toolkit is used for various operations like stemming of words.
+1. **CVXopt**: This is an optimization library used for solving the quadratic programming problem that is used to make the classifier. Not available for Windows. You might want to switch to Ubuntu or any other debian distro.
+
+2. **Natural Language Toolkit**: This toolkit is used for various operations like stemming of words. ( If you dont know what stemming is, google it. Really cool stuff)
 3. numpy
 
 These libraries have to be pre-installed
